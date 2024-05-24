@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "common.h": "c",
+        "dp80390cpu.h": "c"
+    }
+}
