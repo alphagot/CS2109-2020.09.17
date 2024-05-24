@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "common.h": "c",
-        "dp80390cpu.h": "c"
+        "dp80390cpu.h": "c",
+        "define1.h": "c",
+        "INTRINS.H": "cpp"
     }
 }
