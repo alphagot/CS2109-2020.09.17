@@ -4,5 +4,6 @@
         "dp80390cpu.h": "c",
         "define1.h": "c",
         "INTRINS.H": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
