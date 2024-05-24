@@ -1,0 +1,253 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        07/31/2020  11:17:30  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE main.obj TO CS2110 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  CS2110 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0020H     UNIT         ?DT?MAIN
+            DATA    0028H     0002H     UNIT         _DATA_GROUP_
+            IDATA   002AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0130H     UNIT         ?PR?MCU_INIT?MAIN
+            CODE    0133H     003DH     UNIT         ?PR?MAIN?MAIN
+            CODE    0170H     002CH     UNIT         ?CO?MAIN
+            CODE    019CH     0012H     UNIT         ?PR?_DELAY_20US?MAIN
+            CODE    01AEH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   CS2110 (MAIN)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                  -----    -----
+  +--> ?PR?MCU_INIT?MAIN
+
+?PR?MCU_INIT?MAIN              0028H    0002H
+  +--> ?PR?_DELAY_20US?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  CS2110 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2020  11:17:30  PAGE 2
+
+
+  D:0008H         PUBLIC        voltage_bak
+  D:000AH         PUBLIC        detect_count
+  D:000BH         PUBLIC        self_check_flag
+  D:000CH         PUBLIC        adjust_flag
+  D:000DH         PUBLIC        alarm_flag
+  C:0170H         PUBLIC        BZ_Freq
+  D:000EH         PUBLIC        silince_time_bak
+  D:000FH         PUBLIC        delta_value
+  D:00A8H         PUBLIC        IE
+  D:0010H         PUBLIC        detect_time
+  D:0011H         PUBLIC        alarm_value
+  D:0012H         PUBLIC        sleep_flag
+  D:00B8H         PUBLIC        IP
+  D:0013H         PUBLIC        timer_flag
+  C:0133H         PUBLIC        main
+  D:0014H         PUBLIC        Charge_Flag
+  D:0015H         PUBLIC        led_falg
+  D:0088H         PUBLIC        TCON
+  D:0016H         PUBLIC        led_timer
+  D:0017H         PUBLIC        IRED_Ptr
+  C:019CH         PUBLIC        _delay_20us
+  D:0018H         PUBLIC        lvd_flag
+  D:0019H         PUBLIC        key_flag
+  D:00DAH         PUBLIC        WDCNTH
+  D:001AH         PUBLIC        rxd_flag
+  D:001BH         PUBLIC        comm_step
+  D:00D9H         PUBLIC        WDCNTM
+  C:0180H         PUBLIC        IRED_ADJ
+  D:001CH         PUBLIC        FIRE_ALARM_VALUE
+  D:001DH         PUBLIC        lvd_time
+  C:0003H         PUBLIC        MCU_Init
+  D:001EH         PUBLIC        bz_timer
+  D:001FH         PUBLIC        Smoke_Value
+  D:0020H         PUBLIC        Dark_Value
+  D:0021H         PUBLIC        Battery_Value_H
+  D:0022H         PUBLIC        silince_flag
+  D:00CBH         PUBLIC        TMR3C
+  D:0023H         PUBLIC        Battery_Value_L
+  D:00CEH         PUBLIC        TMR3H
+  D:00A1H         PUBLIC        PAREG
+  D:00A9H         PUBLIC        PBREG
+  D:00A2H         PUBLIC        PADIR
+  D:00B1H         PUBLIC        PCREG
+  D:00AAH         PUBLIC        PBDIR
+  D:0024H         PUBLIC        QUIT_ALARM_VALUE
+  D:00CDH         PUBLIC        TMR3L
+  D:00B2H         PUBLIC        PCDIR
+  D:0025H         PUBLIC        bz_step
+  D:00D8H         PUBLIC        WDCON
+  D:0026H         PUBLIC        silince_time
+  -------         PROC          MAIN
+  C:0133H         LINE#         81
+  C:0133H         LINE#         82
+  C:0133H         LINE#         83
+  C:0136H         LINE#         85
+  C:0139H         LINE#         86
+  C:013BH         LINE#         87
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2020  11:17:30  PAGE 3
+
+
+  C:013DH         LINE#         88
+  C:013FH         LINE#         89
+  C:0142H         LINE#         90
+  C:0144H         LINE#         91
+  C:0147H         LINE#         92
+  C:0149H         LINE#         93
+  C:014DH         LINE#         94
+  C:014FH         LINE#         95
+  C:0151H         LINE#         96
+  C:0153H         LINE#         97
+  C:0155H         LINE#         98
+  C:0157H         LINE#         99
+  C:0159H         LINE#         100
+  C:015BH         LINE#         101
+  C:015FH         LINE#         102
+  C:0162H         LINE#         103
+  C:0164H         LINE#         104
+  C:0164H         LINE#         105
+  C:0164H         LINE#         106
+  C:0167H         LINE#         107
+  C:016EH         LINE#         109
+  -------         ENDPROC       MAIN
+  -------         PROC          MCU_INIT
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0028H         SYMBOL        temp
+  -------         ENDDO         
+  C:0003H         LINE#         114
+  C:0003H         LINE#         115
+  C:0003H         LINE#         117
+  C:0009H         LINE#         118
+  C:000FH         LINE#         119
+  C:0015H         LINE#         120
+  C:001BH         LINE#         121
+  C:0020H         LINE#         122
+  C:0024H         LINE#         124
+  C:0027H         LINE#         125
+  C:002AH         LINE#         126
+  C:002DH         LINE#         130
+  C:0033H         LINE#         131
+  C:0039H         LINE#         134
+  C:003CH         LINE#         135
+  C:0042H         LINE#         136
+  C:0045H         LINE#         138
+  C:0048H         LINE#         139
+  C:004EH         LINE#         140
+  C:0051H         LINE#         141
+  C:0057H         LINE#         143
+  C:005AH         LINE#         144
+  C:0060H         LINE#         145
+  C:0063H         LINE#         148
+  C:0069H         LINE#         149
+  C:006CH         LINE#         150
+  C:0070H         LINE#         151
+  C:0073H         LINE#         152
+  C:0079H         LINE#         153
+  C:007FH         LINE#         156
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2020  11:17:30  PAGE 4
+
+
+  C:0085H         LINE#         159
+  C:008BH         LINE#         160
+  C:0091H         LINE#         173
+  C:0097H         LINE#         174
+  C:009BH         LINE#         175
+  C:009FH         LINE#         177
+  C:00A4H         LINE#         186
+  C:00A7H         LINE#         187
+  C:00AAH         LINE#         188
+  C:00ADH         LINE#         189
+  C:00B3H         LINE#         190
+  C:00B9H         LINE#         192
+  C:00BCH         LINE#         193
+  C:00BFH         LINE#         196
+  C:00C2H         LINE#         197
+  C:00C5H         LINE#         200
+  C:00CAH         LINE#         201
+  C:00CEH         LINE#         202
+  C:00D4H         LINE#         203
+  C:00D6H         LINE#         204
+  C:00D6H         LINE#         205
+  C:00DFH         LINE#         206
+  C:00E4H         LINE#         208
+  C:00E7H         LINE#         209
+  C:00EEH         LINE#         210
+  C:00F9H         LINE#         211
+  C:00FDH         LINE#         212
+  C:0104H         LINE#         213
+  C:0104H         LINE#         214
+  C:0107H         LINE#         215
+  C:0107H         LINE#         216
+  C:0107H         LINE#         217
+  C:0109H         LINE#         219
+  C:0109H         LINE#         220
+  C:010CH         LINE#         221
+  C:010FH         LINE#         222
+  C:0115H         LINE#         223
+  C:0115H         LINE#         224
+  C:0118H         LINE#         225
+  C:011BH         LINE#         239
+  C:0120H         LINE#         241
+  C:0126H         LINE#         242
+  C:012CH         LINE#         243
+  C:0130H         LINE#         244
+  C:0132H         LINE#         246
+  -------         ENDPROC       MCU_INIT
+  -------         PROC          _DELAY_20US
+  D:0007H         SYMBOL        N
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:019CH         LINE#         248
+  C:019CH         LINE#         249
+  C:019CH         LINE#         251
+  C:01A2H         LINE#         252
+  C:01A2H         LINE#         253
+  C:01ADH         LINE#         254
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2020  11:17:30  PAGE 5
+
+
+  C:01ADH         LINE#         256
+  -------         ENDPROC       _DELAY_20US
+  -------         ENDMOD        MAIN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?MAIN
+
+Program Size: data=43.0 xdata=0 code=442
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

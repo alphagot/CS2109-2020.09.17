@@ -1,0 +1,25 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+C:\Documents and Settings\team\桌面\新建文件夹\实装测试程序样例\程序\CS2110_S01B_14K_PWM1_1K_工作时改TRIM值\CS2110.uv2
+Project File Date:  07/30/2020
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?MAIN
+Program Size: data=43.0 xdata=0 code=442
+creating hex file from "CS2110"...
+"CS2110" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?MAIN
+Program Size: data=43.0 xdata=0 code=442
+creating hex file from "CS2110"...
+"CS2110" - 0 Error(s), 1 Warning(s).

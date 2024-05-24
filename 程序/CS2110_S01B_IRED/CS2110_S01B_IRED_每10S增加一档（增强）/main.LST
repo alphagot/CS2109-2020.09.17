@@ -1,0 +1,183 @@
+C51 COMPILER V8.08   MAIN                                                                  09/04/2020 09:29:37 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "DP80390CPU.H"
+   2          #include "common.h"
+   3          #include "register.h"
+   4          #include "intrins.h"
+   5          
+   6          
+   7          #define LED_ON()        PCREG &= ~0x08
+   8          #define LED_OFF()       PCREG |= 0x08
+   9          
+  10          
+  11          unsigned char IRED_STEP;
+  12          
+  13          
+  14          void delay_20us(unsigned char N);
+  15          void MCU_Init();
+  16          
+  17          void main()
+  18          {
+  19   1              unsigned char i;
+  20   1              MCU_Init();
+  21   1              
+  22   1              IRED_STEP = 0x40;
+  23   1      
+  24   1              while(1)
+  25   1              {
+  26   2                      IRED_CTRL = IRED_STEP;
+  27   2      
+  28   2                  IRED_CTRL |= 0x20;  //IRED使能 
+  29   2                      delay_20us(6);
+  30   2              IRED_CTRL &= ~0x20;     //IRED关闭
+  31   2                      
+  32   2                      for (i=0;i<200;i++)
+  33   2                              delay_20us(250);
+  34   2                      for (i=0;i<200;i++)
+  35   2                              delay_20us(250);
+  36   2                      for (i=0;i<200;i++)
+  37   2                              delay_20us(250);
+  38   2                      for (i=0;i<200;i++)
+  39   2                              delay_20us(250);
+  40   2                      for (i=0;i<200;i++)
+  41   2                              delay_20us(250);
+  42   2                      for (i=0;i<200;i++)
+  43   2                              delay_20us(250);
+  44   2                      for (i=0;i<200;i++)
+  45   2                              delay_20us(250);
+  46   2                      for (i=0;i<200;i++)
+  47   2                              delay_20us(250);
+  48   2                              /*
+  49   2                      for (i=0;i<200;i++)
+  50   2                              delay_20us(250);
+  51   2                      for (i=0;i<200;i++)
+  52   2                              delay_20us(250);
+  53   2                              */
+  54   2                      IRED_STEP++;                      
+  55   2              }       
+C51 COMPILER V8.08   MAIN                                                                  09/04/2020 09:29:37 PAGE 2   
+
+  56   1      
+  57   1      
+  58   1      }
+  59          
+  60          void MCU_Init()
+  61          {
+  62   1              SYS_REG_MASK = 0xA5;
+  63   1              SYS_REG1 = 0x58;         //打开看门狗使能，打开低压复位，打开高速振荡器
+  64   1              SYS_REG3 = 0x10;         //     
+  65   1      //      SYS_REG2 = 0xC2;         //高速时钟4分频，空闲模式              
+  66   1      //      SYS_REG4 = 0x0c;         //PWM用高速时钟4分频
+  67   1              SYS_REG2 = 0x03;         //高速时钟，空闲模式
+  68   1              SYS_REG4 = 0x01;         //PWM用高速时钟
+  69   1              LXT_START = 0X00;
+  70   1      
+  71   1              IE = 0x85;                                      //全局中断，int1(),int0()中断使能
+  72   1              IP = 0x01;                                              //int0优先
+  73   1              TCON = 0x05;                                    //int0,int1为沿触发     
+  74   1                
+  75   1              
+  76   1              BANDGAP_TEMP = 0x05;
+  77   1              LDO2_CTRL = 0X03;
+  78   1      
+  79   1              
+  80   1              PADIR = 0x01;
+  81   1              PAPU = 0XFe;
+  82   1              PAREG = 0x00;
+  83   1      
+  84   1              PCDIR = 0x08;    //红色led等pc3
+  85   1              PCPU = 0XF7;
+  86   1              PCREG = 0x08;
+  87   1              ADPCR = 0X30;
+  88   1      
+  89   1              PBDIR = 0x08;                   //pb3输出低电平
+  90   1              PBPU = ~0x08;                   //pb3不上拉
+  91   1              PBREG = 0x00;
+  92   1      
+  93   1              PWM_PERIOD0L = 0x98;            //pwm周期为3.4KHz   时钟４Ｍ
+  94   1              PWM_PERIOD0H = 0x04;
+  95   1      //      PWM_PERIOD0L = 0xe2;            //pwm周期为3.2KHz   时钟４Ｍ
+  96   1      //      PWM_PERIOD0H = 0x04;                                                       
+  97   1              DZ_CTRL = 0x05;                 //pwm0互补输出,全N模式
+  98   1              PWM_CTRL = 0x40;                //pwm0装载，连续输出，初始电平为0  
+  99   1      
+ 100   1              WAKEUP_EDGE_REG = 0x42;         //下降沿唤醒
+ 101   1      
+ 102   1      
+ 103   1              IRED_CTRL = 0x40;               //设置发射电流
+ 104   1              MISC = 0x40;                    //pb6复用IRED  
+ 105   1      
+ 106   1      /******************uart*********************/
+ 107   1      /*      MISC |= 0x80;   //复用uart口
+ 108   1              SCON =  0X40;   //方式1,溢出率／３２
+ 109   1              TTMOD2 = 0x00;  //使用timer1产生波特率，16位计数
+ 110   1              TMOD = 0x00;    //不分频，４Ｍ
+ 111   1              TH1 =  0X00;
+ 112   1              TL1 = 0X0c;             //104ｕｓ，9600ｂｐｓ
+ 113   1              TTCON = 0x2a;      */
+ 114   1      /*******************************************/
+ 115   1      
+ 116   1      
+ 117   1              OPA1C0 = 0x23;          //积分增益为８倍
+C51 COMPILER V8.08   MAIN                                                                  09/04/2020 09:29:37 PAGE 3   
+
+ 118   1              OPA1C1 = 0x0c;          //OPA1连接红外接收管
+ 119   1              OPA1MODE = 0x04;        //设置成开环    
+ 120   1      
+ 121   1              LVDC = 0x05;            //2.5V
+ 122   1              
+ 123   1      //      TBC = 0xa6;                //TBC开启2s定时
+ 124   1      //      TBC = 0x08;                //TBC0开启4s定时,TBC1关闭
+ 125   1      //      TBC = 0X40;
+ 126   1      //      TBC = 0x84;                //TBC开启0.5s定时
+ 127   1      //      INTML = 0xf7;      //TBC中断使能
+ 128   1      //      INTSEL0L = 0x08;   //TBC中断从int0进入  */ 
+ 129   1               
+ 130   1              TMR3C = 0X58;           //timer3使用低速时钟,并使能
+ 131   1              TMR3L = 0X00;
+ 132   1              TMR3H = 0X06;           //0.125ms*64000=8s
+ 133   1      //      INTML = 0XDF;           //TIMER23中断开启
+ 134   1              INTSEL0L = 0X20;        //TIMER23中断选择int0输出        
+ 135   1      
+ 136   1              WDCNTM = 0x38;
+ 137   1              WDCNTH = 0x01;          //8K时钟，10s钟
+ 138   1      //      WDCON = 0x28;           //开启看门狗复位功能
+ 139   1              WDCON |= 0x10;  
+ 140   1      
+ 141   1      
+ 142   1              delay_20us(250);   
+ 143   1              
+ 144   1      }
+ 145          
+ 146          void delay_20us(unsigned char N)
+ 147          {
+ 148   1          unsigned char i;
+ 149   1          while(N--)     //6cycle
+ 150   1          {
+ 151   2              for(i=5;i>0;i--);
+ 152   2          }
+ 153   1      
+ 154   1      }
+ 155          
+ 156          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    370    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

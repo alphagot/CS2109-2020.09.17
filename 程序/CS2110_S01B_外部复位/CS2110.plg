@@ -1,0 +1,31 @@
+<html>
+<body>
+<pre>
+<h1>礦ision3 Build Log</h1>
+<h2>Project:</h2>
+E:\FHB\测试程序样例及测试方案汇总\CS2110\实装测试程序样例\程序\CS2110_S01B_外部复位\CS2110.uv2
+Project File Date:  09/18/2018
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(117): warning C280: 'i': unreferenced local variable
+MAIN.C(117): warning C280: 'temp': unreferenced local variable
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?CO?MAIN
+Program Size: data=44.0 xdata=0 code=320
+creating hex file from "CS2110"...
+"CS2110" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=9.0 xdata=0 code=230
+creating hex file from "CS2110"...
+"CS2110" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=9.0 xdata=0 code=230
+creating hex file from "CS2110"...
+"CS2110" - 0 Error(s), 0 Warning(s).

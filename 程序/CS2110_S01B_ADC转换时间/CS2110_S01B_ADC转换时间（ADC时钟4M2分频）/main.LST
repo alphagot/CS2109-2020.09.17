@@ -1,0 +1,272 @@
+C51 COMPILER V8.08   MAIN                                                                  08/11/2020 13:18:01 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "DP80390CPU.H"
+   2          #include "common.h"
+   3          #include "register.h"
+   4          #include "intrins.h"
+   5          
+   6          #define LED_ON()        PCREG &= ~0x08
+   7          #define LED_OFF()       PCREG |= 0x08
+   8          
+   9          
+  10          unsigned char uartr_flag,uartadd,uartdate;
+  11          unsigned char ADC_VALUE1;
+  12          unsigned char ADC_VALUE2;
+  13          
+  14          
+  15          void delay_20us(unsigned char N);
+  16          void MCU_Init();
+  17          void uart();
+  18          void ser_int();
+  19          
+  20          
+  21          void main()
+  22          {
+  23   1              MCU_Init();
+  24   1              ser_int();
+  25   1      
+  26   1              uartr_flag = 0;
+  27   1              while(1)
+  28   1              {
+  29   2                      WDCON |= 0x10;
+  30   2                      uart();
+  31   2                      delay_20us(250);
+  32   2                      delay_20us(250);
+  33   2                      delay_20us(250);
+  34   2                      delay_20us(250);
+  35   2                      delay_20us(250);
+  36   2                      delay_20us(250);
+  37   2                      delay_20us(250);
+  38   2                      delay_20us(250);
+  39   2                      delay_20us(250);
+  40   2                      delay_20us(250);
+  41   2                      delay_20us(250);
+  42   2                      delay_20us(250);
+  43   2                        
+  44   2              }       
+  45   1      
+  46   1      
+  47   1      }
+  48          
+  49          void MCU_Init()
+  50          {
+  51   1              SYS_REG_MASK = 0xA5;
+  52   1              SYS_REG1 = 0x58;         //打开看门狗使能，打开低压复位，打开高速振荡器
+  53   1              SYS_REG3 = 0x10;                
+  54   1      //      SYS_REG2 = 0xC2;         //高速时钟4分频，空闲模式              
+  55   1      //      SYS_REG4 = 0x0c;         //PWM用高速时钟4分频
+C51 COMPILER V8.08   MAIN                                                                  08/11/2020 13:18:01 PAGE 2   
+
+  56   1              SYS_REG2 = 0x03;         //高速时钟，空闲模式
+  57   1              SYS_REG4 = 0x01;         //PWM用高速时钟
+  58   1              LXT_START = 0X00;
+  59   1      
+  60   1              IE = 0x85;                                      //全局中断，int1(),int0()中断使能
+  61   1              IP = 0x01;                                              //int0优先
+  62   1              TCON = 0x05;                                    //int0,int1为沿触发     
+  63   1                
+  64   1              
+  65   1              BANDGAP_TEMP = 0x05;
+  66   1              LDO2_CTRL = 0X03;
+  67   1      
+  68   1              
+  69   1              PADIR = 0x01;
+  70   1              PAPU = 0XFe;
+  71   1              PAREG = 0x00;
+  72   1      
+  73   1              PCDIR = 0x08;    //红色led等pc3
+  74   1              PCPU = 0XF7;
+  75   1              PCREG = 0x08;
+  76   1              ADPCR = 0X30;
+  77   1      
+  78   1      
+  79   1              PBDIR = 0x08;                   //pb3输出低电平
+  80   1              PBPU = ~0x08;                   //pb3不上拉
+  81   1              PBREG = 0x00;
+  82   1      
+  83   1      
+  84   1              PWM_PERIOD0L = 0x98;            //pwm周期为3.4KHz   时钟４Ｍ
+  85   1              PWM_PERIOD0H = 0x04;
+  86   1      //      PWM_PERIOD0L = 0xe2;            //pwm周期为3.2KHz   时钟４Ｍ
+  87   1      //      PWM_PERIOD0H = 0x04;                                                       
+  88   1              DZ_CTRL = 0x05;                 //pwm0互补输出,全N模式
+  89   1              PWM_CTRL = 0x40;                //pwm0装载，连续输出，初始电平为0
+  90   1                
+  91   1      
+  92   1              WAKEUP_EDGE_REG = 0x42;         //下降沿唤醒
+  93   1      
+  94   1      
+  95   1              IRED_CTRL = 0x09;               //设置发射电流
+  96   1              MISC = 0x80;                    //pb6不复用IRED，pa0复用TXD，pa1复用RXD  
+  97   1      
+  98   1      /******************uart*********************/
+  99   1      /*      MISC |= 0x80;   //复用uart口
+ 100   1              SCON =  0X40;   //方式1,溢出率／３２
+ 101   1              TTMOD2 = 0x00;  //使用timer1产生波特率，16位计数
+ 102   1              TMOD = 0x00;    //不分频，４Ｍ
+ 103   1              TH1 =  0X00;
+ 104   1              TL1 = 0X0c;             //104ｕｓ，9600ｂｐｓ
+ 105   1              TTCON = 0x2a;      */
+ 106   1      /*******************************************/
+ 107   1      
+ 108   1      
+ 109   1              OPA1C0 = 0x23;          //积分增益为８倍
+ 110   1              OPA1C1 = 0x0c;          //OPA1连接红外接收管
+ 111   1              OPA1MODE = 0x04;        //设置成开环    
+ 112   1      
+ 113   1              LVDC = 0x05;            //2.5V
+ 114   1              
+ 115   1      //      TBC = 0xa6;                //TBC开启2s定时
+ 116   1      //      TBC = 0x08;                //TBC0开启4s定时,TBC1关闭
+ 117   1      //      TBC = 0X40;
+C51 COMPILER V8.08   MAIN                                                                  08/11/2020 13:18:01 PAGE 3   
+
+ 118   1      //      TBC = 0x84;                //TBC开启0.5s定时
+ 119   1      //      INTML = 0xf7;      //TBC中断使能
+ 120   1      //      INTSEL0L = 0x08;   //TBC中断从int0进入  */ 
+ 121   1               
+ 122   1              TMR3C = 0X58;           //timer3使用低速时钟,并使能
+ 123   1              TMR3L = 0X00;
+ 124   1              TMR3H = 0X06;           //0.125ms*64000=8s
+ 125   1      //      INTML = 0XDF;           //TIMER23中断开启
+ 126   1              INTMH = 0x0D;       //uart中断使能
+ 127   1              INTSEL0L = 0X20;        //TIMER23中断选择int0输出 
+ 128   1      
+ 129   1              WDCNTM = 0x38;
+ 130   1              WDCNTH = 0x01;          //8K时钟，10s钟
+ 131   1              WDCON = 0x28;           //开启看门狗复位功能
+ 132   1              WDCON |= 0x10;
+ 133   1              
+ 134   1              ADPCR |= 0x08;       //PB6为AN3输入
+ 135   1              BANDGAP_TEMP |= 0x02; //打开温度传感器
+ 136   1              LDOC=0X66;      //LDO 2.4v      
+ 137   1      
+ 138   1      
+ 139   1              delay_20us(250);   
+ 140   1              
+ 141   1      }
+ 142          
+ 143          
+ 144          void delay_20us(unsigned char N)
+ 145          {
+ 146   1          unsigned char i;
+ 147   1          while(N--)     //6cycle
+ 148   1          {
+ 149   2              for(i=5;i>0;i--);
+ 150   2          }
+ 151   1      
+ 152   1      }
+ 153          
+ 154          void ser_int()
+ 155          {       
+ 156   1              TH1 = 0x00;
+ 157   1              TL1 = 0x33;               //2400波特率
+ 158   1              TTCON |= 0x02;    //T1定时周期配置有效
+ 159   1              TMOD = 0x00;      //T1预分频系数1
+ 160   1              TTCON = 0x28;     //T1使能，T1计数使能  
+ 161   1              TTMOD2 = 0x00;    //T1产生波特率，16位计数
+ 162   1              SCON = 0x50;      //串口允许接收,串口工作模式1
+ 163   1              SMOD = 0x00;
+ 164   1      }
+ 165          
+ 166          void uart()
+ 167          {
+ 168   1              if(uartr_flag == 0)
+ 169   1              {
+ 170   2               
+ 171   2              ADCR = 0x2A;          //打开ADC电源，选择电源做基准,选择内部温度检测
+ 172   2              delay_20us(5);
+ 173   2              ADCR |= 0x80;
+ 174   2              delay_20us(1);
+ 175   2              ADCR &= ~0x80;            //启动ADC检测
+ 176   2              LED_ON();
+ 177   2              while(ADCR&0x40);         //等待ADC检测结束
+ 178   2              LED_OFF();
+ 179   2              delay_20us(1);
+C51 COMPILER V8.08   MAIN                                                                  08/11/2020 13:18:01 PAGE 4   
+
+ 180   2              IE = 0X00;
+ 181   2              delay_20us(1);
+ 182   2              ADC_VALUE1 = ADRH;        //取ADC高8位
+ 183   2              delay_20us(1);
+ 184   2              ADC_VALUE2 = ADRL>>4;   //取ADC低4位
+ 185   2              delay_20us(1);
+ 186   2              IE = 0X85;
+ 187   2              ADCR = 0x00;
+ 188   2      
+ 189   2      
+ 190   2                      if(uartadd==0x68)
+ 191   2                      {
+ 192   3                              if(uartdate==0x81)
+ 193   3                              {
+ 194   4                                      delay_20us(1);
+ 195   4                                      SBUF = ADC_VALUE1;
+ 196   4                                      uartr_flag = 3;
+ 197   4                              }
+ 198   3                              else
+ 199   3                              {       
+ 200   4                                      uartr_flag = 0;
+ 201   4                              }
+ 202   3                      }
+ 203   2                      else
+ 204   2                      {       
+ 205   3                              uartr_flag = 0;
+ 206   3                      }               
+ 207   2              }
+ 208   1      }
+ 209          
+ 210          
+ 211          
+ 212          void ser_uart() interrupt 2
+ 213          {
+ 214   1          //LED_ON()  ;
+ 215   1              if(SCON&0x01)
+ 216   1              {       
+ 217   2                 
+ 218   2                      SCON &= 0xfe;
+ 219   2                      uartdate = SBUF;
+ 220   2                      if(uartr_flag == 0)
+ 221   2                      {                       
+ 222   3                              uartadd = uartdate;
+ 223   3                              uartr_flag++;
+ 224   3                      }
+ 225   2                      else if(uartr_flag == 1)
+ 226   2                      {       
+ 227   3                              uartr_flag++;
+ 228   3                      }
+ 229   2              }
+ 230   1              else if(SCON&0x02)
+ 231   1              {               
+ 232   2                      SCON &= 0xfd;
+ 233   2                      if(uartr_flag == 3)
+ 234   2                      {
+ 235   3                              SBUF = ADC_VALUE2;
+ 236   3                              uartr_flag = 0;
+ 237   3                      }                                       
+ 238   2              }
+ 239   1      }
+ 240          
+ 241          
+C51 COMPILER V8.08   MAIN                                                                  08/11/2020 13:18:01 PAGE 5   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    503    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

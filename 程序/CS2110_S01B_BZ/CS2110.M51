@@ -1,0 +1,126 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        08/12/2020  15:50:48  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE main.obj TO CS2110 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  CS2110 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     005AH     UNIT         ?PR?MCU_INIT?MAIN
+            CODE    005DH     0012H     UNIT         ?PR?_DELAY_20US?MAIN
+            CODE    006FH     000FH     UNIT         ?PR?MAIN?MAIN
+            CODE    007EH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   CS2110 (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?MCU_INIT?MAIN
+
+?PR?MCU_INIT?MAIN
+  +--> ?PR?_DELAY_20US?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  CS2110 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:006FH         PUBLIC        main
+BL51 BANKED LINKER/LOCATER V6.05                                                      08/12/2020  15:50:48  PAGE 2
+
+
+  D:0088H         PUBLIC        TCON
+  C:005DH         PUBLIC        _delay_20us
+  D:00DAH         PUBLIC        WDCNTH
+  D:00D9H         PUBLIC        WDCNTM
+  C:0003H         PUBLIC        MCU_Init
+  D:00A1H         PUBLIC        PAREG
+  D:00A2H         PUBLIC        PADIR
+  D:00D8H         PUBLIC        WDCON
+  -------         PROC          MAIN
+  C:006FH         LINE#         13
+  C:006FH         LINE#         14
+  C:006FH         LINE#         15
+  C:0072H         LINE#         17
+  C:0072H         LINE#         18
+  C:0072H         LINE#         19
+  C:0075H         LINE#         20
+  C:007CH         LINE#         22
+  -------         ENDPROC       MAIN
+  -------         PROC          MCU_INIT
+  C:0003H         LINE#         27
+  C:0003H         LINE#         28
+  C:0003H         LINE#         29
+  C:0009H         LINE#         30
+  C:000FH         LINE#         31
+  C:0015H         LINE#         34
+  C:001BH         LINE#         35
+  C:0021H         LINE#         36
+  C:0026H         LINE#         38
+  C:0029H         LINE#         39
+  C:002CH         LINE#         40
+  C:002FH         LINE#         44
+  C:0035H         LINE#         45
+  C:003BH         LINE#         71
+  C:0040H         LINE#         72
+  C:0046H         LINE#         73
+  C:0049H         LINE#         74
+  C:004CH         LINE#         119
+  C:004FH         LINE#         120
+  C:0052H         LINE#         121
+  C:0055H         LINE#         122
+  C:0058H         LINE#         124
+  -------         ENDPROC       MCU_INIT
+  -------         PROC          _DELAY_20US
+  D:0007H         SYMBOL        N
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:005DH         LINE#         129
+  C:005DH         LINE#         130
+  C:005DH         LINE#         132
+  C:0063H         LINE#         133
+  C:0063H         LINE#         134
+  C:006EH         LINE#         135
+  C:006EH         LINE#         137
+  -------         ENDPROC       _DELAY_20US
+  -------         ENDMOD        MAIN
+
+BL51 BANKED LINKER/LOCATER V6.05                                                      08/12/2020  15:50:48  PAGE 3
+
+
+Program Size: data=9.0 xdata=0 code=138
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

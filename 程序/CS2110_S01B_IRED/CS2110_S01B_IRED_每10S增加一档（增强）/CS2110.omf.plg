@@ -1,0 +1,15 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Project:</h2>
+D:\fhb\测试整理\CS2110\程序\CS2110_DEMO_S01_20180809_IRED(LDO2供电)\CS2110.uvproj
+Project File Date:  08/08/2018
+
+<h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: data=52.0 xdata=0 code=1854
+creating hex file from "CS2110.omf"...
+"CS2110.omf" - 0 Error(s), 0 Warning(s).

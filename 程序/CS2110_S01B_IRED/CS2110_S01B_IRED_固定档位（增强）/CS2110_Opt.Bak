@@ -1,0 +1,39 @@
+### uVision2 Project, (C) Keil Software
+### Do not modify !
+
+ cExt (*.c)
+ aExt (*.s*; *.src; *.a*)
+ oExt (*.obj)
+ lExt (*.lib)
+ tExt (*.txt; *.h; *.inc)
+ pExt (*.plm)
+ CppX (*.cpp)
+ DaveTm { 0,0,0,0,0,0,0,0 }
+
+Target (Target 1), 0x0000 // Tools: 'MCS-51'
+GRPOPT 1,(Source Group 1),1,0,0
+
+OPTFFF 1,1,1,301989891,0,67,102,0,<.\main.c><main.c> { 44,0,0,0,2,0,0,0,3,0,0,0,255,255,255,255,255,255,255,255,252,255,255,255,233,255,255,255,0,0,0,0,0,0,0,0,104,3,0,0,165,1,0,0 }
+
+ExtF <C:\Documents and Settings\Administrator\桌面\测试程序样例及测试方案汇总\CS2110\实装测试程序样例\程序\CS2110_S01B_IRED\CS2110_S01B_IRED_固定档位（增强）\REGISTER.H> 91,91,0,{ 44,0,0,0,0,0,0,0,1,0,0,0,255,255,255,255,255,255,255,255,252,255,255,255,233,255,255,255,22,0,0,0,22,0,0,0,120,3,0,0,246,1,0,0 }
+
+TARGOPT 1, (Target 1)
+ CLK51=24000000
+  OPTTT 1,1,1,0
+  OPTHX 0,65535,0,0,0
+  OPTLX 120,65,8,<.\>
+  OPTOX 16
+  OPTLT 1,1,1,0,1,1,0,1,0,0,0,0
+  OPTXL 1,1,1,1,1,1,1,0,0
+  OPTFL 1,0,1
+  OPTAX 255
+  OPTBL 0,(Data Sheet)<DATASHTS\ATMEL\AT89C52_DS.PDF>
+  OPTBL 1,(Instruction Set Manual)<DATASHTS\ATMEL\AT_C51ISM.PDF>
+  OPTDL (S8051.DLL)()(DP51.DLL)(-p52)(S8051.DLL)()(TP51.DLL)(-p52)
+  OPTDBG 48125,-1,()()()()()()()()()() ()()()()
+  OPTBB 0,0,148,1,0,0,0,0,0,0,<main.c>()()
+  OPTDF 0x40000000
+  OPTLE <>
+  OPTLC <>
+EndOpt
+

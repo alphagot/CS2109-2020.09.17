@@ -1,0 +1,287 @@
+C51 COMPILER V8.08   MAIN                                                                  07/31/2020 11:17:30 PAGE 1   
+
+
+C51 COMPILER V8.08, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "DP80390CPU.H"
+   2          #include "common.h"
+   3          #include "register.h"
+   4          #include "intrins.h"
+   5          
+   6          //#define FIRE_ALARM_VALUE   0x40
+   7          //#define FIRE_ALARM_VALUE   10
+   8          //#define QUIT_ALARM_VALUE   (FIRE_ALARM_VALUE-10)
+   9          #define SLEF_CHECK_VALUE   0x00
+  10          #define SLIENCDE_VALUE     0xFF
+  11          
+  12          #define SLIENCDE_TIME      50           //静音时间8*50/60=6.667ｓ
+  13          #define DETECT_TIME1       1            //8s
+  14          #define DETECT_TIME2       1            //2s
+  15          #define DETECT_TIME3       2            //1s
+  16          #define BZ_TIME                    1            //500ms
+  17          #define LED_TIME_NORMAL    8            //正常64ｓ闪一次
+  18          #define LED_TIME_SLIENCDE  1            //静音模式下8ｓ闪一次
+  19          #define LVD_TIME               5                //低压报警时间4０ｓ
+  20          
+  21          
+  22          #define LED_ON()        PCREG &= ~0x08
+  23          #define LED_OFF()       PCREG |= 0x08
+  24          
+  25          
+  26          //unsigned int code BZ_Freq[]={0x560,0x540,0x500,0x300,0x1E0};
+  27          //unsigned int code BZ_Freq[]={0x4C0,0x4A0,0x400,0x380,0x270};  //50%占空比最响
+  28          //unsigned int code BZ_Freq[]={0x09,0x08,0x07,0x06,0x05};
+  29          unsigned int code BZ_Freq[]={0x495,0x490,0x480,0x460,0x430,0x3c0,0x320,0x250};  //50%占空比最响
+  30          unsigned char code IRED_ADJ[]=
+  31          {
+  32          0x4f,0x4e,0x0f,0x0e,
+  33          0x4d,0x4c,0x0d,0x0c,
+  34          0x4b,0x4a,0x0b,0x0a,
+  35          0x49,0x48,0x09,0x08,
+  36          0x47,0x46,0x07,0x06,
+  37          0x45,0x44,0x05,0x04,
+  38          0x43,0x42,0x03,0x02,
+  39          };               //发射电流由大变小
+  40          unsigned char Smoke_Value;
+  41          unsigned char Dark_Value;
+  42          unsigned char timer_flag;
+  43          unsigned char bz_timer;
+  44          unsigned char bz_step;
+  45          unsigned char alarm_flag;
+  46          unsigned char alarm_value;
+  47          unsigned char detect_time;
+  48          unsigned char detect_count;
+  49          unsigned char sleep_flag;
+  50          unsigned char key_flag;
+  51          unsigned char rxd_flag;
+  52          unsigned char silince_flag;
+  53          unsigned char led_falg;
+  54          unsigned char led_timer;
+  55          unsigned int  silince_time;
+C51 COMPILER V8.08   MAIN                                                                  07/31/2020 11:17:30 PAGE 2   
+
+  56          unsigned char self_check_flag;
+  57          unsigned char lvd_flag;
+  58          unsigned char lvd_time;
+  59          unsigned char FIRE_ALARM_VALUE;
+  60          unsigned char QUIT_ALARM_VALUE;
+  61          unsigned char delta_value;
+  62          unsigned char comm_step;
+  63          unsigned char Battery_Value_H;
+  64          unsigned char Battery_Value_L;
+  65          unsigned int voltage_bak;
+  66          unsigned char adjust_flag;
+  67          unsigned char silince_time_bak;
+  68          unsigned char IRED_Ptr;
+  69          unsigned char Charge_Flag;
+  70          
+  71          
+  72          
+  73          void delay_20us(unsigned char N);
+  74          void Smoke_Detect();
+  75          void BZ_Process();
+  76          void Key_Process();
+  77          void Other_Process();
+  78          void Sleep();
+  79          void MCU_Init();
+  80          
+  81          void main()
+  82          {
+  83   1              MCU_Init();
+  84   1      
+  85   1              timer_flag = 0;
+  86   1              bz_timer = 0;
+  87   1              bz_step = 0;
+  88   1              alarm_flag = 0;
+  89   1              detect_time = DETECT_TIME1;             //8s
+  90   1              detect_count = 0;
+  91   1              sleep_flag = 1;
+  92   1              key_flag = 0;
+  93   1              silince_time = 0;
+  94   1              silince_time_bak = 0;
+  95   1              silince_flag = 0;
+  96   1              led_falg = 0;
+  97   1              self_check_flag = 0;
+  98   1              lvd_flag = 0;
+  99   1              lvd_time = 0;
+ 100   1              comm_step = 0;
+ 101   1              voltage_bak = 0;
+ 102   1              IRED_Ptr = 14;          //设置指针初始位置
+ 103   1              Charge_Flag = 0;
+ 104   1              while(1)
+ 105   1              {
+ 106   2                      WDCON |= 0x10;
+ 107   2                      PWM_CTRL |= 0x02;
+ 108   2                                        
+ 109   2              }       
+ 110   1      
+ 111   1      
+ 112   1      }
+ 113          
+ 114          void MCU_Init()
+ 115          {
+ 116   1              unsigned char i,temp[2];
+ 117   1              SYS_REG_MASK = 0xA5;
+C51 COMPILER V8.08   MAIN                                                                  07/31/2020 11:17:30 PAGE 3   
+
+ 118   1              SYS_REG1 = 0x58;         //打开看门狗使能，打开低压复位，打开高速振荡器
+ 119   1              SYS_REG3 = 0x10;         //     
+ 120   1              SYS_REG2 = 0x02;         //低速时钟
+ 121   1              SYS_REG4 = 0x00;         //低速时钟
+ 122   1              LXT_START = 0X00;
+ 123   1      
+ 124   1              IE = 0x85;                                      //全局中断，int1(),int0()中断使能
+ 125   1              IP = 0x01;                                              //int0优先
+ 126   1              TCON = 0x05;                                    //int0,int1为沿触发     
+ 127   1                
+ 128   1              
+ 129   1      
+ 130   1              BANDGAP_TEMP = 0x05;
+ 131   1              LDO2_CTRL = 0X03;
+ 132   1      
+ 133   1              
+ 134   1              PADIR = 0x01;
+ 135   1              PAPU = 0XFe;
+ 136   1              PAREG = 0x00;
+ 137   1      
+ 138   1              PCDIR = 0x08;    //红色led灯pc3
+ 139   1              PCPU = 0XF7;
+ 140   1              PCREG = 0x08;
+ 141   1              ADPCR = 0X30;
+ 142   1      
+ 143   1              PBDIR = 0x08;                   //pb3输出低电平
+ 144   1              PBPU = ~0x08;                   //pb3不上拉
+ 145   1              PBREG = 0x00;
+ 146   1      
+ 147   1      
+ 148   1              PWM_PERIOD1L = 0x08;            //pwm1周期为1KHz   时钟8K
+ 149   1              PWM_PERIOD1H = 0x00;
+ 150   1              PWM_PULSE1L = 0x04;
+ 151   1              PWM_PULSE1H = 0x00;                                                                
+ 152   1              DZ_CTRL = 0x0a;                 //pwm1互补输出,全N模式
+ 153   1              PWM_CTRL = 0x80;                //pwm1装载，连续输出，初始电平为0  
+ 154   1      
+ 155   1      
+ 156   1              WAKEUP_EDGE_REG = 0x42;         //下降沿唤醒
+ 157   1      
+ 158   1      
+ 159   1              IRED_CTRL = 0x09;               //设置发射电流为125ｍA
+ 160   1              MISC = 0x40;                    //pb6复用IRED  
+ 161   1      
+ 162   1      /******************uart*********************/
+ 163   1      /*      MISC |= 0x80;   //复用uart口
+ 164   1              SCON =  0X40;   //方式1,溢出率／３２
+ 165   1              TTMOD2 = 0x00;  //使用timer1产生波特率，16位计数
+ 166   1              TMOD = 0x00;    //不分频，４Ｍ
+ 167   1              TH1 =  0X00;
+ 168   1              TL1 = 0X0c;             //104ｕｓ，9600ｂｐｓ
+ 169   1              TTCON = 0x2a;      */
+ 170   1      /*******************************************/
+ 171   1      
+ 172   1      
+ 173   1              OPA1C0 = 0x23;          //积分增益为８倍
+ 174   1              OPA1C1 = 0x0c;          //OPA1连接红外接收管
+ 175   1              OPA1MODE = 0x04;        //设置成开环    
+ 176   1      
+ 177   1              LVDC = 0x05;            //2.5V
+ 178   1              
+ 179   1      //      TBC = 0xa6;                //TBC开启2s定时
+C51 COMPILER V8.08   MAIN                                                                  07/31/2020 11:17:30 PAGE 4   
+
+ 180   1      //      TBC = 0x08;                //TBC0开启4s定时,TBC1关闭
+ 181   1      //      TBC = 0X40;
+ 182   1      //      TBC = 0x84;                //TBC开启0.5s定时
+ 183   1      //      INTML = 0xf7;      //TBC中断使能
+ 184   1      //      INTSEL0L = 0x08;   //TBC中断从int0进入  */ 
+ 185   1               
+ 186   1              TMR3C = 0X58;           //timer3使用低速时钟,并使能
+ 187   1              TMR3L = 0X00;
+ 188   1              TMR3H = 0X06;           //0.125ms*64000=8s
+ 189   1              INTML = 0XDF;
+ 190   1              INTSEL0L = 0X20;         
+ 191   1      
+ 192   1              WDCNTM = 0x38;
+ 193   1              WDCNTH = 0x01;          //8K时钟，10s钟
+ 194   1      //      WDCNTM = 0x38;
+ 195   1      //      WDCNTH = 0x00;
+ 196   1              WDCON = 0x28;           //开启看门狗复位功能
+ 197   1              WDCON |= 0x10;  
+ 198   1      
+ 199   1      
+ 200   1              E2P_ADDRH=0x00; //起始地址
+ 201   1              E2P_ADDRL=0x00;
+ 202   1              E2P_CTRL = 0x10;
+ 203   1              for(i=0;i<2;i++)
+ 204   1              {
+ 205   2                 if(i<1)
+ 206   2                         E2P_CTRL=0x13;       //启动读
+ 207   2                 else
+ 208   2                         E2P_CTRL=0x11;       //启动度
+ 209   2                 while(!(E2P_FLAG&0x01));//判断是否写完
+ 210   2                 temp[i]=E2P_DATA;
+ 211   2              } 
+ 212   1              if(temp[0]!=(~temp[1]))
+ 213   1              {
+ 214   2                      FIRE_ALARM_VALUE = 0x60;
+ 215   2                      alarm_value = FIRE_ALARM_VALUE;
+ 216   2                      QUIT_ALARM_VALUE = FIRE_ALARM_VALUE - 10;               
+ 217   2              }
+ 218   1              else                                       //上电读取报警阈值
+ 219   1              {
+ 220   2                      FIRE_ALARM_VALUE = temp[0];
+ 221   2                      alarm_value = FIRE_ALARM_VALUE;
+ 222   2                      QUIT_ALARM_VALUE = FIRE_ALARM_VALUE - 10;                         
+ 223   2              }                                         
+ 224   1              alarm_value = 0xc0;
+ 225   1              FIRE_ALARM_VALUE = 0xc0;
+ 226   1      
+ 227   1      
+ 228   1      /*      delay_20us(250);
+ 229   1              delay_20us(250);
+ 230   1              delay_20us(250);
+ 231   1              delay_20us(250);
+ 232   1              delay_20us(250);
+ 233   1              delay_20us(250);
+ 234   1              delay_20us(250);
+ 235   1              delay_20us(250);
+ 236   1              delay_20us(250);
+ 237   1              delay_20us(250);
+ 238   1              delay_20us(250); */
+ 239   1              delay_20us(250);  
+ 240   1              
+ 241   1              XBYTE[0x0604] = 0xFF;
+C51 COMPILER V8.08   MAIN                                                                  07/31/2020 11:17:30 PAGE 5   
+
+ 242   1              XBYTE[0x0601] = 0xDF;
+ 243   1              XBYTE[0x0602] = 0x01;
+ 244   1              XBYTE[0x0603] = 0x01; 
+ 245   1              
+ 246   1      }
+ 247          
+ 248          void delay_20us(unsigned char N)
+ 249          {
+ 250   1          unsigned char i;
+ 251   1          while(N--)     //6cycle
+ 252   1          {
+ 253   2              for(i=5;i>0;i--);
+ 254   2          }
+ 255   1      
+ 256   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    383    ----
+   CONSTANT SIZE    =     44    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     32       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

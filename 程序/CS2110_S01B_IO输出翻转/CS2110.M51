@@ -1,0 +1,138 @@
+BL51 BANKED LINKER/LOCATER V6.05                                                        08/12/2020  15:08:50  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE main.obj TO CS2110 RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+  C:\KEIL\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  CS2110 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     005FH     UNIT         ?PR?MCU_INIT?MAIN
+            CODE    0062H     0016H     UNIT         ?PR?MAIN?MAIN
+            CODE    0078H     0012H     UNIT         ?PR?_DELAY_20US?MAIN
+            CODE    008AH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   CS2110 (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?MCU_INIT?MAIN
+  +--> ?PR?_DELAY_20US?MAIN
+
+?PR?MCU_INIT?MAIN
+  +--> ?PR?_DELAY_20US?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  CS2110 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+BL51 BANKED LINKER/LOCATER V6.05                                                      08/12/2020  15:08:50  PAGE 2
+
+
+  C:0062H         PUBLIC        main
+  D:0088H         PUBLIC        TCON
+  C:0078H         PUBLIC        _delay_20us
+  D:00DAH         PUBLIC        WDCNTH
+  D:00D9H         PUBLIC        WDCNTM
+  C:0003H         PUBLIC        MCU_Init
+  D:00A1H         PUBLIC        PAREG
+  D:00A9H         PUBLIC        PBREG
+  D:00A2H         PUBLIC        PADIR
+  D:00B1H         PUBLIC        PCREG
+  D:00AAH         PUBLIC        PBDIR
+  D:00B2H         PUBLIC        PCDIR
+  D:00D8H         PUBLIC        WDCON
+  -------         PROC          MAIN
+  C:0062H         LINE#         14
+  C:0062H         LINE#         15
+  C:0062H         LINE#         16
+  C:0065H         LINE#         18
+  C:0065H         LINE#         19
+  C:0065H         LINE#         20
+  C:006AH         LINE#         21
+  C:006DH         LINE#         22
+  C:0070H         LINE#         23
+  C:0073H         LINE#         24
+  C:0076H         LINE#         26
+  -------         ENDPROC       MAIN
+  -------         PROC          MCU_INIT
+  C:0003H         LINE#         31
+  C:0003H         LINE#         32
+  C:0003H         LINE#         33
+  C:0009H         LINE#         34
+  C:000FH         LINE#         35
+  C:0015H         LINE#         38
+  C:001BH         LINE#         39
+  C:0021H         LINE#         40
+  C:0026H         LINE#         42
+  C:0029H         LINE#         43
+  C:002CH         LINE#         44
+  C:002FH         LINE#         48
+  C:0035H         LINE#         52
+  C:0038H         LINE#         53
+  C:003DH         LINE#         54
+  C:003FH         LINE#         56
+  C:0042H         LINE#         57
+  C:0046H         LINE#         58
+  C:0048H         LINE#         63
+  C:004BH         LINE#         64
+  C:004FH         LINE#         65
+  C:0051H         LINE#         109
+  C:0054H         LINE#         110
+  C:0057H         LINE#         111
+  C:005AH         LINE#         112
+  C:005DH         LINE#         116
+  -------         ENDPROC       MCU_INIT
+  -------         PROC          _DELAY_20US
+  D:0007H         SYMBOL        N
+  -------         DO            
+BL51 BANKED LINKER/LOCATER V6.05                                                      08/12/2020  15:08:50  PAGE 3
+
+
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0078H         LINE#         120
+  C:0078H         LINE#         121
+  C:0078H         LINE#         123
+  C:007EH         LINE#         124
+  C:007EH         LINE#         125
+  C:0089H         LINE#         126
+  C:0089H         LINE#         128
+  -------         ENDPROC       _DELAY_20US
+  -------         ENDMOD        MAIN
+
+Program Size: data=9.0 xdata=0 code=150
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
